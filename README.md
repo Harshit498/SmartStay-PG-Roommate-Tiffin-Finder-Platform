@@ -1,116 +1,97 @@
-# PG Finder
+# 🏠 SmartStay – PG, Flat & Roommate Finder Platform
 
-PG Finder is a web application designed to help users find Paying Guest (PG) accommodations, roommates, tiffin services, and local events. Built with Flask, Bootstrap, and SQLite, it provides a user-friendly interface for searching and listing PGs and related services.
+**SmartStay** is a full-stack rental platform built with Flask where users can search for PGs, flats, or roommates. It also includes **roommate matching**, **tiffin services**, and **chat features** to create a one-stop solution for students and working professionals looking for accommodation.
 
-## Features
-- Browse PG listings
-- Find and connect with roommates
-- Discover tiffin (meal) services
-- View and post local events
-- Responsive design with Bootstrap
+---
 
-## Project Structure
-```
-projecthehai1026/
-├── app.py                # Main Flask application
-├── models/               # Database models
-│   └── models.py
-├── static/               # Static files (CSS, images)
-│   ├── css/
-│   │   └── style.css
-│   └── images/
-├── templates/            # HTML templates
-│   ├── base.html
-│   ├── home.html
-│   ├── listings.html
-│   ├── roommates.html
-│   ├── tiffin.html
-│   ├── events.html
-│   └── details.html
-├── instance/
-│   └── site.db           # SQLite database
-├── requirements.txt      # Python dependencies
-├── seed_data.py          # Script to seed the database
-├── test_flask.py         # Test file
-└── README.md             # Project documentation
-```
+## 🚀 Features
 
-## Setup Instructions
+### 🔍 PG & Flat Listings
+- Browse verified PG and flat listings
+- Filter by location, budget, and amenities
+- Responsive UI for desktop and mobile
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/pgfinder.git
-   cd pgfinder
-   ```
+### 👫 Roommate Matching
+- Match with compatible roommates based on preferences
+- In-app **chat system** for direct communication
 
-2. **Create a virtual environment (optional but recommended):**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+### 🍱 Tiffin Service Integration
+- Discover local tiffin providers with menus and pricing
+- Booking forms to connect with service providers
 
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 📝 Booking Forms
+- Submit booking requests for PGs, flats, or tiffin services
+- Data stored in SQLite for tracking and management
 
-4. **Set up the database:**
-   - The SQLite database (`site.db`) is included in the `instance/` folder. If you need to reset or seed the database, run:
-     ```bash
-     python seed_data.py
-     ```
+### 📊 Dashboard
+- Centralized view of saved listings and roommate connections
+- Planned **expense tracking** module (future enhancement)
 
-5. **Run the application:**
-   ```bash
-   python app.py
-   ```
-   The app will be available at `http://127.0.0.1:5000/`.
+---
 
-## Contributing
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+## 🛠️ Tech Stack
 
-## License
-This project is licensed under the MIT License. 
+- **Backend:** Flask (Python), SQLAlchemy
+- **Frontend:** HTML, CSS (Bootstrap), Jinja2
+- **Database:** SQLite
+- **Features:** Authentication, Filterable Listings, Roommate Matching Logic
 
-## Deploying on Firebase Hosting + Cloud Run
+---
 
-### 1. Build and Deploy to Cloud Run
+## 📂 Project Structure
 
-- Install Google Cloud SDK and Firebase CLI
-- Authenticate: `gcloud auth login`
-- Set project: `gcloud config set project YOUR_PROJECT_ID`
-- Build container:
-  ```sh
-  gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/flask-app
-  ```
-- Deploy to Cloud Run:
-  ```sh
-  gcloud run deploy flask-app --image gcr.io/YOUR_PROJECT_ID/flask-app --platform managed --region us-central1 --allow-unauthenticated
-  ```
-- Note the Cloud Run URL after deployment.
+smartstay/
+│
+├── app.py # Main Flask app (routes, auth, etc.)
+├── models.py # Database models (Users, PG, Roommate, Tiffin)
+├── templates/ # All HTML templates (home, listings, dashboard)
+├── static/ # CSS, JS, and images
+├── blueprints/ # Modular route files (pg, roommate, tiffin, chat)
+└── instance/smartstay.db # SQLite database
 
-### 2. Set Up Firebase Hosting
 
-- `firebase login`
-- `firebase init hosting` (choose your project, set public dir to `public` or any, skip SPA, skip auto deploy)
-- Edit `firebase.json` to add a rewrite:
-  ```json
-  {
-    "hosting": {
-      "rewrites": [
-        {
-          "source": "**",
-          "run": {
-            "serviceId": "flask-app",
-            "region": "us-central1"
-          }
-        }
-      ]
-    }
-  }
-  ```
-- Deploy:
-  ```sh
-  firebase deploy --only hosting
-  ```
-- Share the Firebase Hosting URL! 
+---
+
+## 🧠 How It Works (Simplified)
+
+1. **User Signup/Login** → Users create accounts and log in.
+2. **Browse Listings** → PGs and flats are displayed with filters (budget, location).
+3. **Roommate Matching** → Users answer preference questions → matched with potential roommates.
+4. **Booking & Tiffin** → Booking forms allow requests to PG owners or tiffin providers.
+5. **Dashboard** → Shows saved listings, matches, and service requests.
+
+---
+
+## 🧪 Status
+
+| Feature                  | Status       |
+|-------------------------|--------------|
+| PG & Flat Listings       | ✅ Done       |
+| Roommate Matching        | ✅ Done       |
+| Tiffin Services          | ✅ Done       |
+| Booking Forms            | ✅ Done       |
+| Chat Feature             | ⚠️ Basic (expandable) |
+| Expense Tracking         | 🚧 Planned    |
+| Deployment               | ❌ Not yet deployed |
+
+---
+
+## 📸 Screenshots *(Optional Section)*
+_Add homepage, listing, and roommate match screenshots here for extra impact._
+
+---
+
+## 🧑‍💻 Author
+
+- **Harshit Khandelwal**  
+- Final Year B.Tech CSE Student  
+- [GitHub](https://github.com/yourusername) | [LinkedIn](https://linkedin.com/in/yourprofile)
+
+---
+
+## 🙏 Acknowledgements
+
+- UI inspired by Indian PG rental platforms like StanzaLiving & BookMyPG
+- Data modeled for real-world PG/roommate use cases
+
+---

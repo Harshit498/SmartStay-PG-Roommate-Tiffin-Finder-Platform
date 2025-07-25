@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Book Now | Roommate{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm animate__animated animate__fadeInDown" data-aos="fade-down">
+                <div class="card-body text-center">
+                    <h2 class="mb-3 text-success section-title"><i class="bi bi-bag-check"></i> Booking Confirmed!</h2>
+                    <h4 class="mb-2">{{ roommate.name }}</h4>
+                    <p class="mb-3">Thank you for booking. Our team will contact you soon for further details.</p>
+                    <a href="/roommates" class="btn btn-warning">Back to Roommates</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

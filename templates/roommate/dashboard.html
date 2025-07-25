@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Roommate Dashboard | SmartStay{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Roommate Dashboard</h2>
+  <h4>Received Requests</h4>
+  <ul class="list-group mb-4">
+    {% for req in received %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        From: {{ req.sender.username }}
+        <span>
+          {% if req.status == 'pending' %}
+            <form method="post" action="{{ url_for('roommate.accept_request', req_id=req.id) }}" style="display:inline-block;">
+              <button type="submit" class="btn btn-success btn-sm">Accept</button>
+            </form>
+            <form method="post" action="{{ url_for('roommate.reject_request', req_id=req.id) }}" style="display:inline-block;">
+              <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+            </form>
+          {% else %}
+            <span class="badge bg-secondary">{{ req.status|capitalize }}</span>
+          {% endif %}
+        </span>
+      </li>
+    {% else %}
+      <li class="list-group-item">No received requests.</li>
+    {% endfor %}
+  </ul>
+  <h4>Sent Requests</h4>
+  <ul class="list-group mb-4">
+    {% for req in sent %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        To: {{ req.receiver.username }}
+        <span class="badge bg-secondary">{{ req.status|capitalize }}</span>
+      </li>
+    {% else %}
+      <li class="list-group-item">No sent requests.</li>
+    {% endfor %}
+  </ul>
+  <h4>Matches</h4>
+  <ul class="list-group">
+    {% for match in matches %}
+      <li class="list-group-item">
+        Matched with: {% if match.sender_id == current_user.id %}{{ match.receiver.username }}{% else %}{{ match.sender.username }}{% endif %}
+        <a href="#" class="btn btn-outline-primary btn-sm ms-2">Chat</a>
+      </li>
+    {% else %}
+      <li class="list-group-item">No matches yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %} 

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Edit Expense | SmartStay{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Edit Expense</h2>
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">Month</label>
+      <input type="text" name="month" class="form-control" value="{{ expense.month }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Rent (₹)</label>
+      <input type="number" name="rent" class="form-control" value="{{ expense.rent }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Food (₹)</label>
+      <input type="number" name="food" class="form-control" value="{{ expense.food }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Other (₹)</label>
+      <input type="number" name="other" class="form-control" value="{{ expense.other }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Transport (₹)</label>
+      <input type="number" name="transport" class="form-control" value="{{ expense.transport }}">
+    </div>
+    <button type="submit" class="btn btn-success">Update Expense</button>
+    <a href="{{ url_for('expenses.dashboard') }}" class="btn btn-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %} 

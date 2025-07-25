@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Events | PG Finder{% endblock %}
+{% block content %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="mb-4 text-center section-title" data-aos="fade-up">Upcoming Events</h2>
+        <div class="row g-4">
+            {% for e in events %}
+            <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="card h-100 shadow-lg bg-dark text-white border-0 rounded-4">
+                    <img src="{{ e.image_url }}" class="card-img-top rounded-top-4" alt="{{ e.name }}" style="height:250px; object-fit:cover;">
+                    <div class="card-body d-flex flex-column bg-black bg-opacity-75 rounded-bottom-4 border-top border-secondary">
+                        <h5 class="card-title mb-2">{{ e.name }}</h5>
+                        <p class="card-text mb-1"><i class="bi bi-calendar-event"></i> <b>Date:</b> {{ e.date }} | <i class="bi bi-clock"></i> {{ e.time }}</p>
+                        <p class="card-text mb-1"><i class="bi bi-geo-alt text-danger"></i> <b>Location:</b> {{ e.location }}</p>
+                        <p class="card-text mb-2"><i class="bi bi-info-circle"></i> {{ e.description }}</p>
+                        <p class="card-text mb-1"><i class="bi bi-telephone"></i> <b>Contact:</b> {{ e.contact_info }}</p>
+                        <a href="{{ url_for('events.event_detail', event_id=e.id) }}" class="btn btn-outline-warning mt-auto w-100 animate__animated animate__fadeInUp"><i class="bi bi-eye"></i> View Details</a>
+                        {% if current_user.is_authenticated %}
+                        <form method="post" action="{{ url_for('events.book_event', event_id=e.id) }}" class="mt-2 w-100">
+                            <button type="submit" class="btn btn-outline-success w-100 mb-2 animate__animated animate__pulse animate__infinite"><i class="bi bi-bag-check"></i> Book Now</button>
+                        </form>
+                        {% else %}
+                        <a href="/login" class="btn btn-outline-success mt-2 w-100 mb-2"><i class="bi bi-person"></i> Login to Book</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

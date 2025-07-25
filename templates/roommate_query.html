@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Query | Roommate{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h2 class="mb-3 text-primary"><i class="bi bi-question-circle"></i> Query Sent!</h2>
+                    <h4 class="mb-2">{{ roommate.name }}</h4>
+                    <p class="mb-3">Your query has been sent. The roommate will contact you soon.</p>
+                    <a href="/roommates" class="btn btn-success">Back to Roommates</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Start Chat | {{ roommate.name }}{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg animate__animated animate__fadeInDown" data-aos="fade-down">
+                <div class="card-body">
+                    <h3 class="mb-4 text-center section-title">Start Chat with {{ roommate.name }}</h3>
+                    <img src="{{ roommate.image_url }}" alt="{{ roommate.name }}" class="rounded-circle d-block mx-auto mb-3 border border-3 border-primary" style="width:100px;height:100px;object-fit:cover;">
+                    {% if chat_sent %}
+                        <div class="alert alert-success text-center animate__animated animate__fadeInUp">Your chat request has been sent!</div>
+                        <a href="/roommates" class="btn btn-warning w-100">Back to Roommates</a>
+                    {% else %}
+                    <form method="post" class="animate__animated animate__fadeInUp animate__delay-1s">
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message (optional)</label>
+                            <textarea class="form-control" id="message" name="message" rows="3" placeholder="Write a message to {{ roommate.name }}..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 animate__animated animate__pulse animate__infinite">Send Chat Request</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

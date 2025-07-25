@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Tiffin Vendor Dashboard | SmartStay{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Tiffin Vendor Dashboard</h2>
+  <h4>Your Vendors</h4>
+  <ul class="list-group mb-4">
+    {% for v in vendors %}
+      <li class="list-group-item">
+        <b>{{ v.name }}</b> - {{ v.location }}
+      </li>
+    {% else %}
+      <li class="list-group-item">No vendors found.</li>
+    {% endfor %}
+  </ul>
+  <h4>Bookings</h4>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Plan</th>
+        <th>Status</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td>{{ b.user_id }}</td>
+        <td>{{ b.plan }}</td>
+        <td>{{ b.status }}</td>
+        <td>{{ b.timestamp.strftime('%d %b %Y') }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">No bookings found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %} 

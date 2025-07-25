@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Event Booking | SmartStay{% endblock %}
+{% block content %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg border-success animate__animated animate__fadeInDown" data-aos="fade-down">
+                    <div class="card-body text-center">
+                        <h2 class="card-title text-success mb-3 section-title"><i class="bi bi-bag-check"></i> Event Booked!</h2>
+                        <h4 class="mb-2">{{ event.name }}</h4>
+                        <p class="mb-1"><i class="bi bi-calendar-event"></i> <b>Date:</b> {{ event.date }} | <i class="bi bi-clock"></i> {{ event.time }}</p>
+                        <p class="mb-1"><i class="bi bi-geo-alt text-danger"></i> <b>Location:</b> {{ event.location }}</p>
+                        <p class="mb-2"><i class="bi bi-info-circle"></i> {{ event.description }}</p>
+                        <p class="mb-1"><i class="bi bi-telephone"></i> <b>Contact:</b> {{ event.contact_info }}</p>
+                        <a href="/events" class="btn btn-outline-success mt-3">Back to Events</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} 

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}My Listings | SmartStay{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">My PG/Flat/Villa Listings</h2>
+  <a href="{{ url_for('listings.add_listing') }}" class="btn btn-primary mb-3">Add New Listing</a>
+  <div class="row g-4">
+    {% for pg in listings %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card h-100 shadow-lg">
+        <img src="{{ pg.image_url }}" class="card-img-top" alt="{{ pg.name }}" style="height:200px; object-fit:cover;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ pg.name }}</h5>
+          <p class="card-text">₹{{ pg.price }} | {{ pg.city }} | {{ pg.sharing_type }}</p>
+          <a href="{{ url_for('listings.edit_listing', pg_id=pg.id) }}" class="btn btn-warning mb-2">Edit</a>
+          <form method="POST" action="{{ url_for('listings.delete_listing', pg_id=pg.id) }}">
+            <button type="submit" class="btn btn-danger w-100">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p>No listings found.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %} 

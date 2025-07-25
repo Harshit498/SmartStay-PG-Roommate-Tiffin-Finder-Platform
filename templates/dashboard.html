@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% block title %}Monthly Expense Tracker | SmartStay{% endblock %}
+{% block content %}
+<section class="py-5" style="background: #181c24; min-height: 100vh;">
+  <div class="container-fluid">
+    <h2 class="text-center text-white mb-5 section-title animate__animated animate__fadeInDown">Monthly Expense Dashboard</h2>
+    <!-- Expense Input Form -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-12 col-md-10 col-lg-8">
+        <div class="card bg-dark text-white shadow-lg rounded-4 border-0" data-aos="fade-up">
+          <div class="card-body py-4">
+            <h4 class="mb-4 text-center">Add Your Monthly Expenses</h4>
+            <form method="POST" class="row g-3 align-items-end justify-content-center">
+              <div class="col-12 col-md-3">
+                <label class="form-label">Month</label>
+                <input type="text" name="month" class="form-control" placeholder="e.g. Jul 2025" required value="{{ selected_month or '' }}">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label">Rent (₹)</label>
+                <input type="number" name="rent" class="form-control" min="0" required value="{{ expense_summary['Rent'] }}">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label">Food (₹)</label>
+                <input type="number" name="food" class="form-control" min="0" required value="{{ expense_summary['Food'] }}">
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label">Other (₹)</label>
+                <input type="number" name="other" class="form-control" min="0" required value="{{ expense_summary['Other'] }}">
+              </div>
+              <!-- Transport is optional/hidden for now -->
+              <div class="d-none">
+                <input type="number" name="transport" value="{{ expense_summary['Transport'] }}">
+              </div>
+              <div class="col-12 d-grid mt-3">
+                <button type="submit" class="btn btn-warning btn-lg animate__animated animate__pulse animate__infinite">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Month Dropdown and Total -->
+    <div class="row justify-content-center mb-4">
+      <div class="col-12 col-md-10 col-lg-8 d-flex flex-wrap align-items-center justify-content-between">
+        <div>
+          <form method="get" class="d-inline">
+            <label class="text-white me-2">View Month:</label>
+            <select name="month" class="form-select d-inline w-auto" onchange="this.form.submit()">
+              {% for m in months %}
+                <option value="{{ m }}" {% if m == selected_month %}selected{% endif %}>{{ m }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </div>
+        <div class="text-end">
+          <span class="badge bg-success fs-5">Total: ₹{{ total }}</span>
+        </div>
+      </div>
+    </div>
+    <!-- Charts Section -->
+    <div class="row g-4 justify-content-center">
+      <!-- Pie Chart Card -->
+      <div class="col-12 col-md-6">
+        <div class="card bg-dark text-white shadow-lg rounded-4 border-0" data-aos="fade-up" data-aos-delay="100">
+          <div class="card-body">
+            <h5 class="card-title text-center mb-3">Expense Breakdown</h5>
+            <div class="bg-black bg-opacity-75 rounded-4 p-3 mb-3">
+              <canvas id="pieChart" height="200"></canvas>
+            </div>
+            <div class="mt-4 d-flex justify-content-around flex-wrap">
+              <div class="text-center">
+                <span class="fw-bold">Rent</span><br>
+                <span class="fs-5">₹{{ expense_summary['Rent'] }}</span>
+              </div>
+              <div class="text-center">
+                <span class="fw-bold">Food</span><br>
+                <span class="fs-5">₹{{ expense_summary['Food'] }}</span>
+              </div>
+              <div class="text-center">
+                <span class="fw-bold">Other</span><br>
+                <span class="fs-5">₹{{ expense_summary['Other'] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Bar Chart Card -->
+      <div class="col-12 col-md-6">
+        <div class="card bg-dark text-white shadow-lg rounded-4 border-0" data-aos="fade-up" data-aos-delay="200">
+          <div class="card-body">
+            <h5 class="card-title text-center mb-3">Monthly Trend</h5>
+            <div class="bg-black bg-opacity-75 rounded-4 p-3 mb-3">
+              <canvas id="barChart" height="200"></canvas>
+            </div>
+            <div class="mt-4 d-flex justify-content-around flex-wrap">
+              <div class="text-center">
+                <span class="fw-bold">Latest Rent</span><br>
+                <span class="fs-5">₹{{ rent_data[-1] if rent_data else 0 }}</span>
+              </div>
+              <div class="text-center">
+                <span class="fw-bold">Latest Food</span><br>
+                <span class="fs-5">₹{{ food_data[-1] if food_data else 0 }}</span>
+              </div>
+              <div class="text-center">
+                <span class="fw-bold">Latest Other</span><br>
+                <span class="fs-5">₹{{ other_data[-1] if other_data else 0 }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Prepare data from Jinja
+  const pieData = {{ [expense_summary['Rent'], expense_summary['Food'], expense_summary['Other']] | tojson }};
+  const barLabels = {{ bar_months|tojson }};
+  const rentData = {{ rent_data|tojson }};
+  const foodData = {{ food_data|tojson }};
+  const otherData = {{ other_data|tojson }};
+</script>
+<script>
+  // Pie Chart
+  const pieCtx = document.getElementById('pieChart').getContext('2d');
+  new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: ['Rent', 'Food', 'Other'],
+      datasets: [{
+        data: pieData,
+        backgroundColor: ['#f7b731', '#20bf6b', '#778ca3'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: { color: '#fff', font: { size: 16 } }
+        }
+      }
+    }
+  });
+  // Bar Chart
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: barLabels,
+      datasets: [
+        {
+          label: 'Rent',
+          data: rentData,
+          backgroundColor: '#f7b731',
+          borderRadius: 8,
+          maxBarThickness: 30
+        },
+        {
+          label: 'Food',
+          data: foodData,
+          backgroundColor: '#20bf6b',
+          borderRadius: 8,
+          maxBarThickness: 30
+        },
+        {
+          label: 'Other',
+          data: otherData,
+          backgroundColor: '#778ca3',
+          borderRadius: 8,
+          maxBarThickness: 30
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: { color: '#fff', font: { size: 16 } }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#fff' },
+          grid: { color: '#333' }
+        },
+        y: {
+          ticks: { color: '#fff' },
+          grid: { color: '#333' }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %} 

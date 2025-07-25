@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Expense Dashboard | SmartStay{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Expense Dashboard</h2>
+  <a href="{{ url_for('expenses.add_expense') }}" class="btn btn-primary mb-3">Add Expense</a>
+
+  {% if expenses %}
+    {% set latest = expenses[0] %}
+    <div class="card mb-4">
+      <div class="card-body">
+        <h4 class="card-title">Summary for {{ latest.month }}</h4>
+        <ul class="list-group list-group-flush mb-3">
+          <li class="list-group-item">Rent: ₹{{ latest.rent }}</li>
+          <li class="list-group-item">Food: ₹{{ latest.food }}</li>
+          <li class="list-group-item">Other: ₹{{ latest.other }}</li>
+          <li class="list-group-item">Transport: ₹{{ latest.transport or 0 }}</li>
+          <li class="list-group-item fw-bold">Total: ₹{{ latest.rent + latest.food + latest.other + (latest.transport or 0) }}</li>
+        </ul>
+        <div id="expense-chart"></div>
+      </div>
+    </div>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+      var data = [{
+        x: ['Rent', 'Food', 'Other', 'Transport'],
+        y: [{{ latest.rent }}, {{ latest.food }}, {{ latest.other }}, {{ latest.transport or 0 }}],
+        type: 'bar',
+        marker: {color: ['#007bff', '#28a745', '#ffc107', '#17a2b8']}
+      }];
+      var layout = {title: 'Expense Breakdown for {{ latest.month }}'};
+      Plotly.newPlot('expense-chart', data, layout);
+    </script>
+  {% endif %}
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th>Rent</th>
+        <th>Food</th>
+        <th>Other</th>
+        <th>Transport</th>
+        <th>Total</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in expenses %}
+      <tr>
+        <td>{{ e.month }}</td>
+        <td>₹{{ e.rent }}</td>
+        <td>₹{{ e.food }}</td>
+        <td>₹{{ e.other }}</td>
+        <td>₹{{ e.transport or 0 }}</td>
+        <td>₹{{ e.rent + e.food + e.other + (e.transport or 0) }}</td>
+        <td><a href="{{ url_for('expenses.edit_expense', expense_id=e.id) }}" class="btn btn-sm btn-warning">Edit</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7">No expenses found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %} 

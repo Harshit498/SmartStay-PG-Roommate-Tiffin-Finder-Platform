@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}My Roommate Profile | SmartStay{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">My Roommate Profile</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.name.label(class="form-label") }}{{ form.name(class="form-control") }}</div>
+    <div class="mb-3">{{ form.gender.label(class="form-label") }}{{ form.gender(class="form-select") }}</div>
+    <div class="mb-3">{{ form.location.label(class="form-label") }}{{ form.location(class="form-control") }}</div>
+    <div class="mb-3">{{ form.budget.label(class="form-label") }}{{ form.budget(class="form-control") }}</div>
+    <div class="mb-3">{{ form.hobbies.label(class="form-label") }}{{ form.hobbies(class="form-control") }}</div>
+    <div class="mb-3">{{ form.about.label(class="form-label") }}{{ form.about(class="form-control", rows=3) }}</div>
+    <div class="mb-3">{{ form.image_url.label(class="form-label") }}{{ form.image_url(class="form-control") }}</div>
+    <button type="submit" class="btn btn-success">Save Profile</button>
+  </form>
+</div>
+{% endblock %} 

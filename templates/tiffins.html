@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Tiffin Services | PG Finder{% endblock %}
+{% block content %}
+<section class="py-5 bg-dark bg-gradient">
+    <div class="container-fluid">
+        <h2 class="mb-4 text-white text-center section-title" data-aos="fade-up">Tiffin Services near You</h2>
+        <div class="row g-4">
+            {% for t in tiffins %}
+            <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="card h-100 shadow-lg bg-dark text-white border-0 rounded-4">
+                    <img src="{{ t.image_url }}" class="card-img-top rounded-top-4" alt="{{ t.name }}" style="height:250px; object-fit:cover;">
+                    <div class="card-body d-flex flex-column bg-black bg-opacity-75 rounded-bottom-4 border-top border-secondary">
+                        <h5 class="card-title mb-2">{{ t.name }}</h5>
+                        <p class="card-text mb-1"><i class="bi bi-egg-fried"></i> <b>Menu:</b> {{ t.menu }}</p>
+                        <p class="card-text mb-1"><i class="bi bi-currency-rupee"></i> <b>Price:</b> ₹{{ t.cost }}/month</p>
+                        <p class="card-text mb-1"><i class="bi bi-geo-alt text-danger"></i> <b>City:</b> {{ t.city or t.area_covered }}</p>
+                        {% if t.veg %}
+                        <span class="badge bg-success me-2">Veg</span>
+                        {% endif %}
+                        {% if t.non_veg %}
+                        <span class="badge bg-warning text-dark">Non-Veg</span>
+                        {% endif %}
+                        <div class="d-flex gap-2 mt-auto">
+                            <a href="{{ url_for('tiffin.vendor_detail', vendor_id=t.id) }}" class="btn btn-success w-50"><i class="bi bi-bag-check"></i> Book Now</a>
+                            <a href="{{ url_for('tiffin.vendor_detail', vendor_id=t.id) }}" class="btn btn-outline-primary w-50"><i class="bi bi-gift"></i> Free Trial</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- Booking Modal -->
+<div class="modal fade" id="bookTiffinModal" tabindex="-1" aria-labelledby="bookTiffinModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bookTiffinModalLabel">Book Tiffin Service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Vendor Details -->
+        <div class="mb-3 text-center">
+          <img id="modalTiffinImg" src="" alt="Tiffin" class="rounded mb-2" style="width:120px;height:120px;object-fit:cover;">
+          <h4 id="modalTiffinName"></h4>
+          <p class="mb-1" id="modalTiffinDesc"></p>
+        </div>
+        <ul class="list-group list-group-flush mb-3">
+          <li class="list-group-item"><b>City:</b> <span id="modalTiffinCity"></span></li>
+          <li class="list-group-item"><b>Contact:</b> <span id="modalTiffinContact"></span></li>
+          <li class="list-group-item"><b>Price:</b> ₹<span id="modalTiffinPrice"></span>/month</li>
+          <li class="list-group-item"><b>Timings:</b> Breakfast: 7-9am, Lunch: 12-2pm, Dinner: 7-9pm</li>
+        </ul>
+        <h5>Sample Menu</h5>
+        <div class="list-group mb-3">
+          <div class="list-group-item" id="modalTiffinMenu"></div>
+        </div>
+        <!-- Booking Form -->
+        <form id="tiffinBookingForm">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" name="city" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mobile Number</label>
+            <input type="text" class="form-control" name="mobile" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mode of Payment</label>
+            <select class="form-select" name="payment_mode" required>
+              <option value="Cash">Cash</option>
+              <option value="UPI">UPI</option>
+              <option value="Card">Card</option>
+              <option value="Netbanking">Netbanking</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Plan</label>
+            <select class="form-select" name="plan" required>
+              <option value="Daily">Daily</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Trial">Trial</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Delivery Address (optional)</label>
+            <input type="text" class="form-control" name="address">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Dietary Preferences (optional)</label>
+            <input type="text" class="form-control" name="diet">
+          </div>
+          <button type="submit" class="btn btn-success w-100">Submit Booking</button>
+        </form>
+        <div id="bookingThankYou" class="alert alert-success mt-3 d-none text-center">
+          <h5>Thank you for ordering!</h5>
+          <p>Your tiffin booking has been received. We will contact you soon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Modal population
+    document.querySelectorAll('.open-tiffin-modal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.getElementById('modalTiffinName').textContent = btn.getAttribute('data-name');
+        document.getElementById('modalTiffinImg').src = btn.getAttribute('data-img');
+        document.getElementById('modalTiffinDesc').textContent = btn.getAttribute('data-desc');
+        document.getElementById('modalTiffinPrice').textContent = btn.getAttribute('data-price');
+        document.getElementById('modalTiffinMenu').textContent = btn.getAttribute('data-menu');
+        document.getElementById('modalTiffinCity').textContent = btn.getAttribute('data-city');
+        document.getElementById('modalTiffinContact').textContent = btn.getAttribute('data-contact');
+      });
+    });
+    // Booking form
+    const form = document.getElementById('tiffinBookingForm');
+    const thankYou = document.getElementById('bookingThankYou');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        form.classList.add('d-none');
+        thankYou.classList.remove('d-none');
+      });
+    }
+    // Reset modal on close
+    const modal = document.getElementById('bookTiffinModal');
+    modal.addEventListener('hidden.bs.modal', function () {
+      form.reset();
+      form.classList.remove('d-none');
+      thankYou.classList.add('d-none');
+    });
+  });
+</script>
+{% endblock %} 

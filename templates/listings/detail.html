@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}{{ pg.name }} | SmartStay{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row g-4">
+    <!-- Gallery -->
+    <div class="col-md-6">
+      <div id="galleryCarousel" class="carousel slide mb-3" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          {% set images = [pg.image_url] + (pg.gallery_images.split(',') if pg.gallery_images else []) %}
+          {% for img in images %}
+          <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
+            <img src="{{ img.strip() }}" class="d-block w-100 rounded-4" style="height:320px; object-fit:cover;">
+          </div>
+          {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+      <div class="mb-3">
+        <span class="badge bg-success me-2">₹{{ pg.price }}/month</span>
+        <span class="badge bg-primary me-2">{{ pg.city }}</span>
+        <span class="badge bg-info">{{ pg.sharing_type }}</span>
+      </div>
+      <h4 class="mb-2">{{ pg.name }}</h4>
+      <p class="text-muted">{{ pg.address }}</p>
+      <p>{{ pg.description }}</p>
+      <div class="mb-3">
+        <strong>Amenities:</strong>
+        {% for amenity in pg.amenities.split(',') %}
+          <span class="badge bg-warning text-dark me-1 mb-1"><i class="bi bi-check-circle"></i> {{ amenity.strip() }}</span>
+        {% endfor %}
+      </div>
+      <div class="mb-3">
+        <strong>Food:</strong> <span class="badge bg-secondary">{{ pg.food or 'Home-style Indian meals' }}</span>
+      </div>
+      <div class="mb-3">
+        <strong>For:</strong> <span class="badge bg-danger">{{ pg.gender or 'Unisex' }}</span>
+      </div>
+      <div class="mb-3">
+        <a href="#" class="btn btn-success me-2">Book Now</a>
+        <a href="#" class="btn btn-outline-primary">Contact Owner</a>
+      </div>
+    </div>
+    <!-- Map & Food Menu -->
+    <div class="col-md-6">
+      <div class="mb-4">
+        <h5>Location</h5>
+        <div class="ratio ratio-16x9 rounded-4 border">
+          <!-- Google Maps embed or placeholder -->
+          <iframe src="https://maps.google.com/maps?q={{ pg.city|urlencode }}&output=embed" width="100%" height="220" style="border:0; border-radius:1rem;" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div class="mb-4">
+        <h5>Food Menu (Sample)</h5>
+        <ul class="list-group">
+          <li class="list-group-item">Roti, Rice, Dal, Sabzi, Curd</li>
+          <li class="list-group-item">Paneer Butter Masala, Jeera Rice, Salad</li>
+          <li class="list-group-item">Aloo Paratha, Dahi, Pickle</li>
+          <li class="list-group-item">Idli, Sambar, Coconut Chutney</li>
+        </ul>
+      </div>
+      <div class="mb-4">
+        <h5>Reviews</h5>
+        <div class="border rounded-4 p-3 bg-light mb-2">
+          <strong>Rahul (Pune):</strong> "Very clean, food is homely, and staff is helpful!"
+        </div>
+        <div class="border rounded-4 p-3 bg-light mb-2">
+          <strong>Priya (Delhi):</strong> "Loved the location and amenities. Highly recommended!"
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

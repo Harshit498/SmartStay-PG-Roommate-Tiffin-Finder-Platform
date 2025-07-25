@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Find {{ request.args.get('type', 'PGs, Flats & Villas') }} | SmartStay{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4 text-center">
+    {% if request.args.get('type') == 'PG' %}PGs{% elif request.args.get('type') == 'Villa' %}Villas{% elif request.args.get('type') == 'Flat' %}Flats{% else %}Find Your Perfect Stay{% endif %}
+  </h2>
+  <form method="get" class="row g-3 mb-4 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label">City</label>
+      <input type="text" name="city" class="form-control" value="{{ request.args.get('city', '') }}" placeholder="e.g. Pune, Delhi">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Type</label>
+      <select name="type" class="form-select">
+        <option value="">Any</option>
+        <option value="PG" {% if request.args.get('type') == 'PG' %}selected{% endif %}>PG</option>
+        <option value="Flat" {% if request.args.get('type') == 'Flat' %}selected{% endif %}>Flat</option>
+        <option value="Villa" {% if request.args.get('type') == 'Villa' %}selected{% endif %}>Villa</option>
+        <option value="1BHK" {% if request.args.get('type') == '1BHK' %}selected{% endif %}>1BHK</option>
+        <option value="2BHK" {% if request.args.get('type') == '2BHK' %}selected{% endif %}>2BHK</option>
+        <option value="3-sharing" {% if request.args.get('type') == '3-sharing' %}selected{% endif %}>3-sharing</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Gender</label>
+      <select name="gender" class="form-select">
+        <option value="">Any</option>
+        <option value="Male" {% if request.args.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+        <option value="Female" {% if request.args.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+        <option value="Unisex" {% if request.args.get('gender') == 'Unisex' %}selected{% endif %}>Unisex</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Max Price (₹)</label>
+      <input type="number" name="max_price" class="form-control" value="{{ request.args.get('max_price', '') }}" min="1000" step="500">
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">Search</button>
+    </div>
+  </form>
+  <div class="row g-4">
+    {% for pg in listings %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card h-100 shadow-lg">
+        <img src="{{ pg.image_url }}" class="card-img-top" alt="{{ pg.name }}" style="height:200px; object-fit:cover;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ pg.name }}</h5>
+          <p class="card-text">₹{{ pg.price }} | {{ pg.city }} | {{ pg.sharing_type }}</p>
+          <div class="mb-2">
+            {% for amenity in pg.amenities.split(',')[:3] %}
+              <span class="badge bg-warning text-dark me-1 mb-1"><i class="bi bi-check-circle"></i> {{ amenity.strip() }}</span>
+            {% endfor %}
+          </div>
+          <a href="{{ url_for('listings.listing_detail', pg_id=pg.id) }}" class="btn btn-outline-primary mt-auto">View Details</a>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <p>No listings found. Try changing your filters.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %} 

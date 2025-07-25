@@ -1,0 +1,1 @@
+Place your local Indian-style PG, roommate, tiffin, and event images in this folder. Example filenames: pg1.jpg, roommate1.jpg, tiffin1.jpg, event1.jpg, etc. 

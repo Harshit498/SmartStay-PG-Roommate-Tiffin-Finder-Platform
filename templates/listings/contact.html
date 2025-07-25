@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Contact Owner | {{ pg.name }}{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Contact Owner: {{ pg.name }}</h2>
+  <div class="mb-3"><strong>Location:</strong> {{ pg.city }}, {{ pg.address }}</div>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.name.label(class="form-label") }}{{ form.name(class="form-control") }}</div>
+    <div class="mb-3">{{ form.email.label(class="form-label") }}{{ form.email(class="form-control") }}</div>
+    <div class="mb-3">{{ form.message.label(class="form-label") }}{{ form.message(class="form-control", rows=4) }}</div>
+    <button type="submit" class="btn btn-primary">Send Message</button>
+    <a href="{{ url_for('listings.listing_detail', pg_id=pg.id) }}" class="btn btn-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %} 

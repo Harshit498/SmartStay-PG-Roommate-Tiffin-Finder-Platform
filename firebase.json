@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "flask-app",
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+} 

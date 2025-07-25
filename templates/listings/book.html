@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Book {{ pg.name }} | SmartStay{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Book Now: {{ pg.name }}</h2>
+  <div class="mb-3"><strong>Location:</strong> {{ pg.city }}, {{ pg.address }}</div>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.name.label(class="form-label") }}{{ form.name(class="form-control") }}</div>
+    <div class="mb-3">{{ form.email.label(class="form-label") }}{{ form.email(class="form-control") }}</div>
+    <div class="mb-3">{{ form.phone.label(class="form-label") }}{{ form.phone(class="form-control") }}</div>
+    <div class="mb-3">{{ form.move_in.label(class="form-label") }}{{ form.move_in(class="form-control") }}</div>
+    <button type="submit" class="btn btn-success">Book Now</button>
+    <a href="{{ url_for('listings.listing_detail', pg_id=pg.id) }}" class="btn btn-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %} 

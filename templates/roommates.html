@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Roommate Finder | PG Finder{% endblock %}
+{% block content %}
+<section class="py-5 bg-dark bg-gradient">
+    <div class="container-fluid">
+        <h2 class="mb-4 text-white text-center section-title" data-aos="fade-up">Recommended Roommates</h2>
+        <form class="row g-2 mb-4 justify-content-center animate__animated animate__fadeInDown" method="get" action="/roommates">
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="location" placeholder="Location" value="{{ request.args.get('location', '') }}">
+            </div>
+            <div class="col-md-2">
+                <input type="number" class="form-control" name="budget" placeholder="Max Budget" value="{{ request.args.get('budget', '') }}">
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" name="gender">
+                    <option value="">Gender</option>
+                    <option value="Male" {% if request.args.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if request.args.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if request.args.get('gender') == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="hobbies" placeholder="Hobbies/Interests (comma separated)" value="{{ request.args.get('hobbies', '') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-warning w-100"><i class="bi bi-search"></i> Search</button>
+            </div>
+        </form>
+        <div class="row g-4">
+            {% for r in roommates %}
+            <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="card h-100 shadow-lg bg-dark text-white border-0 rounded-4">
+                    <img src="{{ r.image_url }}" class="card-img-top rounded-top-4" alt="{{ r.name }}" style="height:250px; object-fit:cover;">
+                    <div class="card-body d-flex flex-column bg-black bg-opacity-75 rounded-bottom-4 border-top border-secondary">
+                        <h5 class="card-title mb-2">{{ r.name }} {% if r.gender == 'Male' %}<i class="bi bi-gender-male text-primary"></i>{% elif r.gender == 'Female' %}<i class="bi bi-gender-female text-danger"></i>{% else %}<i class="bi bi-gender-ambiguous text-success"></i>{% endif %}</h5>
+                        <p class="card-text mb-1"><i class="bi bi-geo-alt text-danger"></i> <b>Location:</b> {{ r.location }}</p>
+                        <p class="card-text mb-1"><i class="bi bi-currency-rupee"></i> <b>Rent Share:</b> ₹{{ r.budget }}</p>
+                        <p class="card-text mb-2"><i class="bi bi-person-vcard"></i> <b>About:</b> {{ r.about }}</p>
+                        {% if r.hobbies %}
+                        <p class="card-text mb-2"><i class="bi bi-star"></i> <b>Hobbies:</b> {{ r.hobbies }}</p>
+                        {% endif %}
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('roommate_chat', roommate_id=r.id) }}" class="btn btn-outline-warning w-100 mt-auto"><i class="bi bi-chat-dots"></i> Start Chat</a>
+                        {% else %}
+                        <a href="/login" class="btn btn-outline-warning w-100 mt-auto"><i class="bi bi-chat-dots"></i> Login to Chat</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %} 

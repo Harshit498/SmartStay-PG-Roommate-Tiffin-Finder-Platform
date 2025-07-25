@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Listings | PG Finder{% endblock %}
+{% block content %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="mb-4 text-center section-title" data-aos="fade-up">Available PGs, Flats & Villas</h2>
+        <div class="row g-4">
+            {% for pg in pgs %}
+            <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="card h-100 shadow border-0">
+                    <img src="{{ pg.image_url }}" class="card-img-top" alt="{{ pg.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ pg.name }}</h5>
+                        <p class="card-text mb-1"><i class="bi bi-geo-alt text-danger"></i> <strong>City:</strong> {{ pg.city }}</p>
+                        <p class="card-text mb-1"><i class="bi bi-geo-fill text-primary"></i> <strong>Location:</strong> {{ pg.address.split(',')[0] }}</p>
+                        <p class="card-text mb-1"><i class="bi bi-people"></i> <strong>Sharing:</strong> {{ pg.sharing_type }}</p>
+                        <p class="card-text mb-1"><i class="bi bi-currency-rupee"></i> <strong>Price:</strong> ₹{{ pg.price }}</p>
+                        <div class="mb-2">
+                            {% for amenity in pg.amenities.split(',') %}
+                                <span class="badge bg-secondary me-1">
+                                    {% if 'WiFi' in amenity %}<i class="bi bi-wifi"></i>{% endif %}
+                                    {% if 'AC' in amenity %}<i class="bi bi-snow"></i>{% endif %}
+                                    {% if 'Laundry' in amenity %}<i class="bi bi-basket"></i>{% endif %}
+                                    {% if 'Food' in amenity %}<i class="bi bi-egg-fried"></i>{% endif %}
+                                    {% if 'Parking' in amenity %}<i class="bi bi-car-front"></i>{% endif %}
+                                    {% if 'CCTV' in amenity %}<i class="bi bi-camera-video"></i>{% endif %}
+                                    {% if 'Power Backup' in amenity %}<i class="bi bi-lightning"></i>{% endif %}
+                                    {{ amenity.strip() }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                        <a href="/details/{{ pg.id }}" class="btn btn-outline-warning w-100"><i class="bi bi-eye"></i> View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %} 

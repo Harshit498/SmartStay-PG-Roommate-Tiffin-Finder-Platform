@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block title %}{{ tiffin.name }} | Tiffin Service{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-lg mb-4 p-4" style="background: #fffbe9; border-radius: 18px;">
+        <div class="text-center">
+          <img src="{{ tiffin.image_url }}" alt="{{ tiffin.name }}" class="rounded mb-3" style="width:200px;height:200px;object-fit:cover;">
+          <h2 class="mb-2">{{ tiffin.name }}</h2>
+          <p class="mb-4 fs-5 text-secondary" style="padding: 0 2rem;">{{ tiffin.description or 'Delicious home-style meals delivered to your doorstep. Enjoy a variety of fresh, healthy, and tasty meals every day, prepared with care and delivered on time.' }}</p>
+        </div>
+        <div class="row mb-4 justify-content-center">
+          <div class="col-md-8">
+            <ul class="list-group list-group-flush mb-4">
+              <li class="list-group-item"><b>Location:</b> {{ tiffin.location }}</li>
+              <li class="list-group-item"><b>Contact:</b> {{ tiffin.phone }}</li>
+              <li class="list-group-item"><b>Price:</b> ₹{{ tiffin.menus[0].price if tiffin.menus else 'N/A' }}/month</li>
+              <li class="list-group-item"><b>Timings:</b> Breakfast: 7-9am, Lunch: 12-2pm, Dinner: 7-9pm</li>
+              <li class="list-group-item"><b>Food Type:</b> Veg{% if tiffin.non_veg %}/Non-Veg{% endif %}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="card shadow-lg mb-4 food-menu-section">
+        <h4 class="mb-4 text-center">Food Menu</h4>
+        {% if food_menu and food_menu.days %}
+        <div class="d-flex flex-row align-items-stretch justify-content-center">
+          <div class="menu-days-tabs me-3">
+            <ul class="nav flex-column nav-pills" id="menuTab" role="tablist">
+              {% for day in food_menu.days %}
+              <li class="nav-item" role="presentation">
+                <button class="nav-link {% if loop.index0 == 0 %}active{% endif %}" id="day{{ loop.index0 }}-tab" data-bs-toggle="pill" data-bs-target="#day{{ loop.index0 }}" type="button" role="tab" aria-controls="day{{ loop.index0 }}" aria-selected="{{ 'true' if loop.index0 == 0 else 'false' }}">Day {{ loop.index }}<br><span class="small text-muted">{{ day.day }}</span></button>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="tab-content flex-grow-1" id="menuTabContent">
+            {% for day in food_menu.days %}
+            <div class="tab-pane fade {% if loop.index0 == 0 %}show active{% endif %}" id="day{{ loop.index0 }}" role="tabpanel" aria-labelledby="day{{ loop.index0 }}-tab">
+              <div class="menu-day-card">
+                <div class="row text-center justify-content-center">
+                  <div class="col-md-3 menu-meal-col">
+                    <h6 class="text-success">Breakfast<br><small>07:30 - 09:00</small></h6>
+                    <ul class="list-unstyled">
+                      {% for item in day.breakfast %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <div class="col-md-3 menu-meal-col">
+                    <h6 class="text-primary">Lunch<br><small>12:30 - 14:30</small></h6>
+                    <ul class="list-unstyled">
+                      {% for item in day.lunch %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <div class="col-md-3 menu-meal-col">
+                    <h6 class="text-warning">Evening Snacks<br><small>16:00 - 18:00</small></h6>
+                    <ul class="list-unstyled">
+                      {% if day.snacks %}
+                        {% for item in day.snacks %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                      {% else %}
+                        <li class="text-muted">-</li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                  <div class="col-md-3 menu-meal-col">
+                    <h6 class="text-danger">Dinner<br><small>19:30 - 21:00</small></h6>
+                    <ul class="list-unstyled">
+                      {% for item in day.dinner %}
+                      <li>{{ item }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="menu-note">*This food menu is currently being served on the residence and is subject to change in future.</div>
+        {% else %}
+        <div class="alert alert-info text-center">Menu not available for this vendor.</div>
+        {% endif %}
+      </div>
+      <div class="text-center">
+        <button class="btn btn-success btn-lg mt-3" data-bs-toggle="modal" data-bs-target="#bookTiffinModal">Confirm Booking</button>
+      </div>
+      <div class="card shadow-sm mt-4">
+        <div class="card-body">
+          <h4>Reviews</h4>
+          {% for review in reviews %}
+          <div class="border rounded-4 p-3 bg-light mb-2">
+            <strong>{{ review.user.username }}:</strong> "{{ review.comment }}" <span class="text-warning">{% for i in range(review.rating) %}★{% endfor %}</span>
+          </div>
+          {% else %}
+          <div class="alert alert-info">No reviews yet.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Booking Modal -->
+<div class="modal fade" id="bookTiffinModal" tabindex="-1" aria-labelledby="bookTiffinModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bookTiffinModalLabel">Book {{ tiffin.name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="tiffinBookingForm">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" name="city" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mobile Number</label>
+            <input type="text" class="form-control" name="mobile" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mode of Payment</label>
+            <select class="form-select" name="payment_mode" required>
+              <option value="Cash">Cash</option>
+              <option value="UPI">UPI</option>
+              <option value="Card">Card</option>
+              <option value="Netbanking">Netbanking</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Plan</label>
+            <select class="form-select" name="plan" required>
+              <option value="Daily">Daily</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Trial">Trial</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Delivery Address (optional)</label>
+            <input type="text" class="form-control" name="address">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Dietary Preferences (optional)</label>
+            <input type="text" class="form-control" name="diet">
+          </div>
+          <button type="submit" class="btn btn-success w-100">Submit Booking</button>
+        </form>
+        <div id="bookingThankYou" class="alert alert-success mt-3 d-none text-center">
+          <h5>Thank you for ordering!</h5>
+          <p>Your tiffin booking has been received. We will contact you soon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('tiffinBookingForm');
+    const thankYou = document.getElementById('bookingThankYou');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        form.classList.add('d-none');
+        thankYou.classList.remove('d-none');
+      });
+    }
+    // Reset modal on close
+    const modal = document.getElementById('bookTiffinModal');
+    modal.addEventListener('hidden.bs.modal', function () {
+      form.reset();
+      form.classList.remove('d-none');
+      thankYou.classList.add('d-none');
+    });
+  });
+</script>
+{% endblock %} 

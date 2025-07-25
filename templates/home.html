@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% block title %}Home | SmartStay{% endblock %}
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center justify-content-center text-white" style="background: linear-gradient(rgba(255,152,0,0.25),rgba(0,0,0,0.7)), url('https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg') center/cover no-repeat; min-height: 60vh;">
+  <div class="container text-center py-5">
+    <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInDown">Come, live<br>the new kind<br>of Living.</h1>
+    <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Life at a professionally managed accommodation awaits you.</p>
+    <form class="row g-2 justify-content-center animate__animated animate__fadeInUp animate__delay-2s" method="get" action="/listings">
+      <div class="col-12 col-md-3 mb-2 mb-md-0">
+        <input type="text" class="form-control" name="landmark" placeholder="Search your landmark, location, college, office, locality">
+      </div>
+      <div class="col-12 col-md-2 mb-2 mb-md-0">
+        <button type="submit" class="btn btn-warning w-100">Search Near Me</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Feature Highlights -->
+<section class="py-4 bg-white border-bottom" data-aos="fade-up">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-12 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
+        <div class="feature-icon mb-2"><i class="bi bi-cash-coin text-primary fs-1"></i></div>
+        <h6 class="fw-bold">No Brokerage</h6>
+        <p class="small text-muted">Move in without paying a fortune.</p>
+      </div>
+      <div class="col-12 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
+        <div class="feature-icon mb-2"><i class="bi bi-people-fill text-success fs-1"></i></div>
+        <h6 class="fw-bold">Multiple Options</h6>
+        <p class="small text-muted">Co-ed, Girls-only, Boys-only, all types available.</p>
+      </div>
+      <div class="col-12 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
+        <div class="feature-icon mb-2"><i class="bi bi-geo-alt-fill text-danger fs-1"></i></div>
+        <h6 class="fw-bold">Live Close</h6>
+        <p class="small text-muted">Stay near your college or workspace.</p>
+      </div>
+      <div class="col-12 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="400">
+        <div class="feature-icon mb-2"><i class="bi bi-shield-lock-fill text-info fs-1"></i></div>
+        <h6 class="fw-bold">24x7 Security</h6>
+        <p class="small text-muted">CCTV, secure entry, and on-call support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Category Cards (show only real listings) -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="mb-4 text-center section-title" data-aos="fade-up">Top PGs, Flats & Villas in Your City</h2>
+    <div class="row g-4">
+      {% if featured_pgs and featured_pgs|length > 0 %}
+        {% for pg in featured_pgs %}
+        <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+          <div class="card h-100 shadow border-0">
+            <img src="{{ pg.image_url }}" class="card-img-top" alt="{{ pg.name }}" style="height:220px; object-fit:cover;">
+            <div class="card-body">
+              <h5 class="card-title fw-bold">{{ pg.name }} <span class="badge bg-info ms-2">{{ pg.sharing_type if pg.sharing_type else pg.type }}</span></h5>
+              <p class="card-text mb-1"><i class="bi bi-geo-alt text-danger"></i> {{ pg.city }}</p>
+              <p class="card-text mb-1"><i class="bi bi-currency-rupee"></i> ₹{{ pg.price }}/month</p>
+              <p class="card-text small">{{ pg.description }}</p>
+              <p class="card-text small text-secondary mb-1">Owner: {{ pg.owner if pg.owner else 'N/A' }} {% if pg.owner_phone %}| <i class="bi bi-telephone"></i> {{ pg.owner_phone }}{% endif %}</p>
+              <a href="/details/{{ pg.id }}" class="btn btn-outline-warning w-100">View Details</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <div class="alert alert-info text-center">No featured listings available. Please add PGs, Flats, or Villas to your database.</div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<section class="py-4 bg-white border-top border-bottom" data-aos="fade-up">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-4 col-md-2 offset-md-2" data-aos="zoom-in" data-aos-delay="100">
+        <h2 class="fw-bold mb-0">8+</h2>
+        <div class="small text-muted">Cities</div>
+      </div>
+      <div class="col-4 col-md-2" data-aos="zoom-in" data-aos-delay="200">
+        <h2 class="fw-bold mb-0">100+</h2>
+        <div class="small text-muted">Residences</div>
+      </div>
+      <div class="col-4 col-md-2" data-aos="zoom-in" data-aos-delay="300">
+        <h2 class="fw-bold mb-0">2000+</h2>
+        <div class="small text-muted">Beds</div>
+      </div>
+      <div class="col-12 col-md-4 mt-3 mt-md-0" data-aos="zoom-in" data-aos-delay="400">
+        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-2">
+          <span class="badge bg-primary">PGs</span>
+          <span class="badge bg-success">Flats</span>
+          <span class="badge bg-warning text-dark">Villas</span>
+          <span class="badge bg-info text-dark">Tiffin</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Your Unique Features -->
+<section class="py-5 bg-light" data-aos="fade-up">
+  <div class="container">
+    <h2 class="mb-4 text-center section-title">Why Choose Us?</h2>
+    <div class="row g-4 align-items-center">
+      <div class="col-12 col-md-4" data-aos="fade-right" data-aos-delay="100">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <h5 class="fw-bold mb-2"><i class="bi bi-patch-check-fill text-success me-2"></i>Verified & Trusted</h5>
+          <p class="mb-0">All listings are verified for safety, quality, and comfort. No scams, no surprises.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <h5 class="fw-bold mb-2"><i class="bi bi-lightning-fill text-warning me-2"></i>Instant Booking</h5>
+          <p class="mb-0">Book your stay in minutes. Secure payments and instant confirmation.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4" data-aos="fade-left" data-aos-delay="300">
+        <div class="p-4 bg-white rounded-4 shadow-sm h-100">
+          <h5 class="fw-bold mb-2"><i class="bi bi-emoji-smile-fill text-primary me-2"></i>Community & Support</h5>
+          <p class="mb-0">Join a vibrant community. 24x7 support, events, and roommate matching.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tiffin Services & Events (Optional: keep as is or move lower) -->
+<section class="py-5 bg-dark bg-gradient">
+  <div class="container-fluid">
+    <h2 class="mb-4 text-white">Tiffin Services near You</h2>
+    <div class="row g-4">
+      {% for t in [
+        {'name': 'Maa Annapurna Tiffin', 'menu': '2 sabzi, 4 roti, chawal, salad, papad', 'cost': 1800, 'area': 'Raja Park, Jaipur', 'img': 'https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg', 'desc': 'Pure veg, home-style food, delivered hot daily. Jain food available on request.'},
+        {'name': 'Swadisht Rasoi', 'menu': 'Rajma chawal, 3 roti, dahi, achar', 'cost': 2200, 'area': 'Powai, Mumbai', 'img': 'https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg', 'desc': 'North Indian tiffin, non-veg options, and special Sunday biryani. Free trial for first-timers.'},
+        {'name': 'Tiffin Ghar', 'menu': 'Dal, chawal, 2 sabzi, 3 roti, sweet', 'cost': 2000, 'area': 'Gomti Nagar, Lucknow', 'img': 'https://images.pexels.com/photos/209540/pexels-photo-209540.jpeg', 'desc': 'Tasty ghar ka khana, both veg and non-veg, with sweets on Fridays. Delivery in 5km radius.'}
+      ] %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-lg bg-dark text-white border-0">
+          <img src="{{ t.img }}" class="card-img-top rounded-top" alt="{{ t.name }}" style="height:250px; object-fit:cover;">
+          <div class="card-body">
+            <h5 class="card-title">{{ t.name }}</h5>
+            <p class="card-text mb-1"><i class="bi bi-egg-fried"></i> {{ t.menu }}</p>
+            <p class="card-text mb-1"><i class="bi bi-currency-rupee"></i> ₹{{ t.cost }}/month</p>
+            <p class="card-text mb-1"><i class="bi bi-geo-alt text-danger"></i> {{ t.area }}</p>
+            <p class="card-text small">{{ t.desc }}</p>
+            <a href="/tiffin" class="btn btn-outline-warning w-100">View Details</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Upcoming Events (Horizontal Scroll) -->
+<section class="py-5 bg-black bg-opacity-75">
+  <div class="container-fluid">
+    <h2 class="mb-4 text-white">Upcoming Events</h2>
+    <div class="overflow-auto" style="white-space:nowrap;">
+      <div class="d-flex flex-row gap-4">
+        {% for e in [
+          {'name': 'PG Fresher Welcome Party', 'date': '15-07-2025', 'img': 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg'},
+          {'name': 'Tiffin Food Festival', 'date': '05-08-2025', 'img': 'https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg'},
+          {'name': 'Diwali Celebration Night', 'date': '01-11-2025', 'img': 'https://images.pexels.com/photos/1695052/pexels-photo-1695052.jpeg'}
+        ] %}
+        <div class="card bg-dark text-white shadow-lg border-0" style="min-width:320px; max-width:340px;">
+          <img src="{{ e.img }}" class="card-img-top rounded-top" alt="{{ e.name }}" style="height:180px; object-fit:cover;">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ e.name }}</h5>
+            <p class="card-text">{{ e.date }}</p>
+            <a href="/events" class="btn btn-outline-warning mt-auto w-100 animate__animated animate__fadeInUp"><i class="bi bi-eye"></i> View Details</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %} 

@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% block title %}{{ pg.name }} | SmartStay{% endblock %}
+{% block content %}
+<style>
+    .dark-theme {
+        background-color: #121212;
+        color: #ffffff;
+        min-height: 100vh;
+    }
+    .hero-image {
+        max-height: 400px;
+        object-fit: cover;
+        width: 100%;
+    }
+    .dark-card {
+        background-color: #1e1e1e;
+        border: 1px solid #333;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+    .price-highlight {
+        color: #00d4aa;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .amenity-tag {
+        background-color: #2d3748;
+        color: #e2e8f0;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        margin: 0.25rem;
+        display: inline-block;
+        font-size: 0.875rem;
+    }
+    .section-title {
+        color: #00d4aa;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    .contact-btn {
+        background: linear-gradient(135deg, #00d4aa, #0099cc);
+        border: none;
+        padding: 15px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    .contact-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+    }
+    .text-strong-light {
+        color: #f8f9fa;
+        font-weight: 500;
+    }
+    .hero-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    margin-bottom: 2rem;
+  }
+  .gallery-img {
+    height: 220px;
+    object-fit: cover;
+    border-radius: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    margin-bottom: 1rem;
+  }
+  .food-menu-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  .food-menu-list li {
+    background: #23272b;
+    color: #fff;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .food-menu-list i {
+    color: #ffc107;
+  }
+  .food-menu-table {
+    background: #f8f9fa;
+    border-radius: 1rem;
+    padding: 1.5rem 1rem;
+    margin-bottom: 2rem;
+  }
+  .food-menu-table th, .food-menu-table td {
+    text-align: center;
+    vertical-align: top;
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+  }
+  .food-menu-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .food-menu-tab-btn {
+    background: none;
+    border: none;
+    color: #00b894;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    transition: background 0.2s;
+    cursor: pointer;
+    text-align: left;
+  }
+  .food-menu-tab-btn.active, .food-menu-tab-btn:hover {
+    background: #e0f7fa;
+    color: #00796b;
+  }
+  .food-menu-meal-col {
+    min-width: 180px;
+  }
+  .food-menu-meal-title {
+    color: #009688;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+  .food-menu-meal-time {
+    color: #888;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+</style>
+<div class="bg-dark text-white py-4" style="min-height: 100vh;">
+  <div class="container">
+    <!-- Gallery -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div id="propertyGallery" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner rounded-4 shadow-lg">
+            {% set images = pg.gallery_images.split(',') if pg.gallery_images else [pg.image_url] %}
+            {% for img in images %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+              <img src="{{ img.strip() }}" class="d-block w-100 gallery-img" alt="Gallery Image {{ loop.index }}">
+            </div>
+            {% endfor %}
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#propertyGallery" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#propertyGallery" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Main Info Card -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-0 mb-4" data-aos="fade-up">
+      <div class="card-body">
+        <h2 class="card-title mb-2 section-title">{{ pg.name }}</h2>
+        <div class="mb-2"><i class="bi bi-geo-alt text-danger me-2"></i>{{ pg.city }}, {{ pg.address }}</div>
+        <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
+          <span class="badge bg-success fs-6">₹{{ pg.price }}/month</span>
+          <span class="badge bg-primary fs-6">{{ pg.sharing_type }} Sharing</span>
+          <span class="badge bg-warning text-dark fs-6">Food: {{ pg.food_type or 'Available' }}</span>
+        </div>
+        <div class="row g-2">
+          <div class="col-12 col-md-6 d-grid mb-2 mb-md-0">
+            <a href="tel:{{ pg.owner_phone or '9876543210' }}" class="btn btn-success btn-lg w-100 animate__animated animate__pulse animate__infinite"><i class="bi bi-telephone me-2"></i>Contact Owner</a>
+          </div>
+          <div class="col-12 col-md-6 d-grid">
+            <button id="save-listing-btn" class="btn btn-outline-danger btn-lg w-100"><i class="bi bi-heart me-2"></i>Save Listing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Property Information & Food Menu -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-7">
+        <div class="card bg-dark text-white shadow-lg rounded-4 border-0 mb-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="card-body">
+            <h5 class="fw-bold text-info mb-3"><i class="bi bi-info-circle me-2"></i>Property Information</h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <strong>Sharing Type:</strong><br>
+                <span>{{ pg.sharing_type }}</span>
+              </div>
+              <div class="col-md-6 mb-3">
+                <strong>Security Deposit:</strong><br>
+                <span>₹{{ pg.price }}</span>
+              </div>
+              <div class="col-md-6 mb-3">
+                <strong>Maintenance:</strong><br>
+                <span class="text-success">Included</span>
+              </div>
+              <div class="col-md-6 mb-3">
+                <strong>Electricity:</strong><br>
+                <span class="text-warning">Extra</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Food Menu: Weekly Table with Tabs -->
+        <div class="card bg-dark text-white shadow-lg rounded-4 border-0 mb-4" data-aos="fade-up" data-aos-delay="150">
+          <div class="card-body">
+            <h5 class="fw-bold text-warning mb-3"><i class="bi bi-egg-fried me-2"></i>Food Menu</h5>
+            {% if food_menu_data and food_menu_data.days %}
+            <div class="row">
+              <div class="col-3">
+                <div class="food-menu-tabs" id="foodMenuTabs">
+                  {% for day in food_menu_data.days %}
+                  <button class="food-menu-tab-btn {% if loop.first %}active{% endif %}" data-day-index="{{ loop.index0 }}">Day {{ loop.index }}<br><span style="font-size:0.95em; color:#888;">{{ day.day }}</span></button>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="col-9">
+                <div id="foodMenuTabContent">
+                  {% for day in food_menu_data.days %}
+                  <div class="food-menu-table food-menu-day-content" style="display: {% if loop.first %}block{% else %}none{% endif %};" data-day-index="{{ loop.index0 }}">
+                    <div class="row">
+                      <div class="col food-menu-meal-col">
+                        <div class="food-menu-meal-title">Breakfast</div>
+                        <div class="food-menu-meal-time">07:30 - 09:00</div>
+                        <ul class="list-unstyled">
+                          {% for item in day.breakfast %}
+                          <li><i class="bi bi-egg-fried"></i> {{ item }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                      <div class="col food-menu-meal-col">
+                        <div class="food-menu-meal-title">Lunch</div>
+                        <div class="food-menu-meal-time">12:30 - 14:30</div>
+                        <ul class="list-unstyled">
+                          {% for item in day.lunch %}
+                          <li><i class="bi bi-egg-fried"></i> {{ item }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                      <div class="col food-menu-meal-col">
+                        <div class="food-menu-meal-title">Dinner</div>
+                        <div class="food-menu-meal-time">19:30 - 21:00</div>
+                        <ul class="list-unstyled">
+                          {% for item in day.dinner %}
+                          <li><i class="bi bi-egg-fried"></i> {{ item }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            <p class="small text-light mt-3">*This food menu is currently being served on the residence and is subject to change in future. Jain food available on request.</p>
+            {% else %}
+            <div class="alert alert-warning">No food menu available for this property.</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <!-- Amenities & Description -->
+      <div class="col-md-5">
+        <div class="card bg-dark text-white shadow-lg rounded-4 border-0 mb-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="card-body">
+            <h5 class="fw-bold text-info mb-3"><i class="bi bi-house-gear me-2"></i>Amenities</h5>
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              {% for amenity in pg.amenities.split(', ') %}
+              <span class="badge bg-secondary">{{ amenity }}</span>
+              {% endfor %}
+              <span class="badge bg-secondary">WiFi</span>
+              <span class="badge bg-secondary">Geyser</span>
+              <span class="badge bg-secondary">Power Backup</span>
+              <span class="badge bg-secondary">RO Water</span>
+              <span class="badge bg-secondary">CCTV</span>
+              <span class="badge bg-secondary">24x7 Water</span>
+            </div>
+            <h5 class="fw-bold text-info mb-3 mt-4"><i class="bi bi-file-text me-2"></i>Description</h5>
+            <p>{{ pg.description }}</p>
+            <p class="small text-light">Clean PG with home-style food, 24x7 water supply, peaceful area. Ideal for students & working professionals. Located in a safe neighborhood with easy access to public transport.</p>
+          </div>
+        </div>
+        <!-- Owner Contact -->
+        <div class="card bg-dark text-white shadow-lg rounded-4 border-0 mb-4" data-aos="fade-up" data-aos-delay="400">
+          <div class="card-body">
+            <h5 class="fw-bold text-info mb-3"><i class="bi bi-person-circle me-2"></i>Owner Details</h5>
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <strong>Name:</strong><br>
+                <span>{{ pg.owner_name or 'Rajesh Mehta' }}</span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <strong>Phone:</strong><br>
+              <span>{{ pg.owner_phone or '+91-9876543210' }}</span>
+            </div>
+            <div class="mb-3">
+              <strong>Available:</strong><br>
+              <span>9:00 AM - 8:00 PM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+<script>
+  // Save Listing Feature (localStorage)
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('save-listing-btn');
+    const propertyKey = 'saved_{{ pg.id if pg.id else 0 }}';
+    // Check if already saved
+    if (localStorage.getItem(propertyKey)) {
+      btn.classList.remove('btn-outline-danger');
+      btn.classList.add('btn-danger');
+      btn.innerHTML = '<i class="bi bi-heart-fill me-2"></i>Saved!';
+    }
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (!localStorage.getItem(propertyKey)) {
+        localStorage.setItem(propertyKey, '1');
+        btn.classList.remove('btn-outline-danger');
+        btn.classList.add('btn-danger');
+        btn.innerHTML = '<i class="bi bi-heart-fill me-2"></i>Saved!';
+      } else {
+        localStorage.removeItem(propertyKey);
+        btn.classList.remove('btn-danger');
+        btn.classList.add('btn-outline-danger');
+        btn.innerHTML = '<i class="bi bi-heart me-2"></i>Save Listing';
+      }
+    });
+
+    // Food menu tab switching
+    const tabBtns = document.querySelectorAll('.food-menu-tab-btn');
+    const dayContents = document.querySelectorAll('.food-menu-day-content');
+    tabBtns.forEach((btn, idx) => {
+      btn.addEventListener('click', function() {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        dayContents.forEach((content, cidx) => {
+          content.style.display = (cidx === idx) ? 'block' : 'none';
+        });
+      });
+    });
+  });
+</script> 

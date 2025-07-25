@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}My Profile | SmartStay{% endblock %}
+{% block content %}
+<style>
+.profile-section { margin-bottom: 2.5rem; }
+.booking-section { margin-bottom: 2.5rem; }
+</style>
+<div class="container py-5">
+  <h2 class="mb-4">My Profile</h2>
+  <div class="card shadow-lg profile-section" style="max-width: 500px; margin: auto;">
+    <div class="card-body">
+      <h4 class="card-title mb-3">{{ user.username }}</h4>
+      <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+      <p class="card-text"><strong>Role:</strong> {{ user.role|capitalize }}</p>
+      <a href="/auth/logout" class="btn btn-danger mt-3">Logout</a>
+    </div>
+  </div>
+  <div class="booking-section">
+    <h3 class="mb-4 text-center">My Bookings</h3>
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-dark text-white fw-bold">Property Bookings</div>
+          <div class="card-body bg-light">
+            {% if property_bookings %}
+            <ul class="list-group mb-0">
+              {% for b in property_bookings %}
+              <li class="list-group-item d-flex align-items-center">
+                <img src="{{ pgs[b.pg_id].image_url }}" alt="{{ pgs[b.pg_id].name }}" style="width:60px;height:60px;object-fit:cover;" class="rounded me-3 border">
+                <div>
+                  <b>{{ pgs[b.pg_id].name }}</b> - {{ pgs[b.pg_id].city }}<br>
+                  <span class="text-muted">Booked on {{ b.date.strftime('%d-%b-%Y %I:%M %p') }}</span>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted mb-0">No property bookings yet.</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-dark text-white fw-bold">Roommate Bookings</div>
+          <div class="card-body bg-light">
+            {% if roommate_bookings %}
+            <ul class="list-group mb-0">
+              {% for b in roommate_bookings %}
+              <li class="list-group-item d-flex align-items-center">
+                <img src="{{ roommates[b.roommate_id].image_url }}" alt="{{ roommates[b.roommate_id].name }}" style="width:60px;height:60px;object-fit:cover;" class="rounded me-3 border">
+                <div>
+                  <b>{{ roommates[b.roommate_id].name }}</b> - {{ roommates[b.roommate_id].location }}<br>
+                  <span class="text-muted">Booked on {{ b.timestamp.strftime('%d-%b-%Y %I:%M %p') }}</span>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted mb-0">No roommate bookings yet.</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-dark text-white fw-bold">Tiffin Bookings</div>
+          <div class="card-body bg-light">
+            {% if tiffin_bookings %}
+            <ul class="list-group mb-0">
+              {% for b in tiffin_bookings %}
+              <li class="list-group-item d-flex align-items-center">
+                <img src="{{ tiffins[b.vendor_id].image_url }}" alt="{{ tiffins[b.vendor_id].name }}" style="width:60px;height:60px;object-fit:cover;" class="rounded me-3 border">
+                <div>
+                  <b>{{ tiffins[b.vendor_id].name }}</b> - {{ tiffins[b.vendor_id].location }}<br>
+                  <span class="text-muted">Booked on {{ b.date.strftime('%d-%b-%Y') if b.date else 'N/A' }}</span>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted mb-0">No tiffin bookings yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
